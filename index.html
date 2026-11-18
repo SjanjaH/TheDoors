@@ -56,7 +56,7 @@ section{padding-block:40px 8px;display:grid;gap:20px;scroll-margin-top:72px}
 /* community map */
 .levels{display:grid;gap:22px}
 .level{display:grid;gap:10px}
-.level-label{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.level-label{font-family:var(--body);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .nodes{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;align-items:end}
 /* each body of the community is drawn as a door: arched top, frame, handle */
 .node{position:relative;font:inherit;text-align:left;cursor:pointer;background:var(--surface);color:var(--ink);
@@ -86,11 +86,12 @@ section{padding-block:40px 8px;display:grid;gap:20px;scroll-margin-top:72px}
 /* situations */
 .sits{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
 .sit{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px;align-content:start;min-width:0}
-.sit .q{font-weight:600}
+.sit .q{font-family:var(--body);font-size:18px;font-weight:600;line-height:1.4}
 .opts{display:grid;gap:8px}
 .opt{font:inherit;font-size:16px;text-align:left;cursor:pointer;background:var(--bg);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:10px 12px}
 .opt:hover:not([disabled]){border-color:var(--blue)}
-.opt[disabled]{cursor:default}
+.opt[aria-disabled="true"]{cursor:default}
+.verdict:focus{outline:none}
 .opt.right{border-color:var(--good);background:var(--good-soft)}
 .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
 .verdict{font-weight:700}
@@ -116,8 +117,8 @@ ol.steps p{font-size:17px}
 details.tool{background:var(--surface);border:1px solid var(--line);border-radius:14px}
 details.tool summary{cursor:pointer;list-style:none;padding:16px 18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;align-items:center}
 details.tool summary::-webkit-details-marker{display:none}
-details.tool summary::after{content:"+";grid-row:1/span 2;grid-column:2;font-size:26px;color:var(--blue);font-weight:600}
-details.tool[open] summary::after{content:"−"}
+details.tool summary::after{content:"+" / "";grid-row:1/span 2;grid-column:2;font-size:26px;color:var(--blue);font-weight:600}
+details.tool[open] summary::after{content:"−" / ""}
 details.tool summary b{font-size:18px}
 details.tool summary span{font-size:15px;color:var(--muted)}
 .tool-body{padding:0 18px 18px;display:grid;gap:14px}
@@ -145,9 +146,13 @@ footer{font-size:14px;color:var(--muted);margin-top:24px;display:grid;gap:6px}
 
 @media (max-width:420px){.nodes{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.node{min-height:170px;padding:30px 12px 40px}}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}.node,.opt,.chip{transition:border-color .15s,background .15s}}
+.skip{position:absolute;left:12px;top:-60px;z-index:20;background:var(--blue);color:var(--surface);padding:10px 16px;border-radius:8px;font-weight:700}
+.skip:focus{top:calc(12px + env(safe-area-inset-top,0px))}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 
+<script>document.documentElement.lang="uk";</script>
+<a class="skip" href="#main">Перейти до змісту гайду</a>
 <div class="wrap">
 <header class="hero">
   <div class="hero-row">
@@ -170,7 +175,7 @@ footer{font-size:14px;color:var(--muted);margin-top:24px;display:grid;gap:6px}
   </ul>
 </nav>
 
-<main>
+<main id="main" tabindex="-1">
 <section id="structure" aria-labelledby="h-structure">
   <h2 id="h-structure">Хто в громаді що вирішує</h2>
   <p class="note">Натисніть на двері: одразу під ними відчиниться опис, що вони вирішують, з чим туди йти і як зв’язатися. Назви відділів у кожній громаді свої: звірте їх зі структурою виконавчих органів на сайті громади.</p>
@@ -178,15 +183,15 @@ footer{font-size:14px;color:var(--muted);margin-top:24px;display:grid;gap:6px}
     <div class="levels">
       <p class="residents">Мешканці громади обирають раду і голову</p>
       <div class="level" role="group" aria-labelledby="l1">
-        <p class="level-label" id="l1">Ухвалюють рішення</p>
+        <h3 class="level-label" id="l1">Ухвалюють рішення</h3>
         <div class="nodes" id="g1"></div>
       </div>
       <div class="level" role="group" aria-labelledby="l2">
-        <p class="level-label" id="l2">Виконують рішення</p>
+        <h3 class="level-label" id="l2">Виконують рішення</h3>
         <div class="nodes" id="g2"></div>
       </div>
       <div class="level" role="group" aria-labelledby="l3">
-        <p class="level-label" id="l3">Радять, представляють, обслуговують</p>
+        <h3 class="level-label" id="l3">Радять, представляють, обслуговують</h3>
         <div class="nodes" id="g3"></div>
       </div>
     </div>
@@ -197,13 +202,14 @@ footer{font-size:14px;color:var(--muted);margin-top:24px;display:grid;gap:6px}
   <p class="note">Тренажер для пар чи груп. Оберіть варіант: гайд покаже, чи це перші правильні двері, яким інструментом скористатися і що робити, якщо справа не рушить.</p>
   <div class="filters" role="group" aria-label="Фільтр ситуацій" id="filters"></div>
   <p class="score" id="score" aria-live="polite"></p>
+  <p class="sr" id="sitcount" aria-live="polite"></p>
   <div class="sits" id="sits"></div>
 </section>
 
 <section id="algorithm" aria-labelledby="h-alg">
   <h2 id="h-alg">Алгоритм: як діяти</h2>
   <p class="note">Шість кроків для будь-якого питання. Позначки біля кроків допомагають підготуватися до звернення; вони лишаються лише у вашому браузері.</p>
-  <ol class="steps" id="steps"></ol>
+  <ol class="steps" id="steps" role="list"></ol>
 </section>
 
 <section id="tools" aria-labelledby="h-tools">
@@ -217,6 +223,7 @@ footer{font-size:14px;color:var(--muted);margin-top:24px;display:grid;gap:6px}
   <p class="note">Більшість питань безбар’єрності вирішує громада. Але частина об’єктів і повноважень належить області або державі. Не знаєте, чиє питання? Пишіть голові громади: звернення, що не належить до її повноважень, мають переслати за належністю і повідомити вам, куди саме.</p>
   <div class="tbl">
     <table>
+      <caption class="sr">Куди звертатися з питаннями, які не належать до повноважень громади</caption>
       <thead><tr><th scope="col">Питання</th><th scope="col">Куди звертатися</th><th scope="col">Приклад</th></tr></thead>
       <tbody>
         <tr><td>Обласні заклади й обласні програми</td><td>Обласна рада; обласна державна (військова) адміністрація та її профільні підрозділи</td><td>обласна лікарня, спеціальна школа, обласна програма безбар’єрності</td></tr>
@@ -233,11 +240,12 @@ footer{font-size:14px;color:var(--muted);margin-top:24px;display:grid;gap:6px}
   <small>Пишіть, навіть якщо не впевнені в адресаті. Але знайдені правильні двері скорочують шлях.</small>
 </div>
 
+<p class="sr" id="status" role="status"></p>
+</main>
 <footer>
   <p><b>Авторка гайду: Ксенія Ємшина-Гоцко.</b></p>
   <p>Гайд для тренінгу «Сила спільноти: мережування та вплив амбасадорів безбар’єрності», проєкт TRUE, листопад 2026. Не є юридичною консультацією: строки подано за законами «Про звернення громадян», «Про доступ до публічної інформації», «Про місцеве самоврядування в Україні»; деталі процедур (петиції, слухання, ініціативи) визначає статут вашої громади.</p>
 </footer>
-</main>
 </div>
 
 <script>
@@ -294,7 +302,7 @@ function renderNodes(){
     const b=document.createElement("button");
     b.className="node"; b.type="button"; b.id="node-"+n.id;
     b.setAttribute("aria-expanded","false"); b.setAttribute("aria-controls","panel");
-    b.innerHTML=`<b>${n.name}</b><small>${n.sub}</small><span class="open-hint">Відчинити ↓</span>`;
+    b.innerHTML=`<b>${n.name}</b><small>${n.sub}</small><span class="open-hint" aria-hidden="true">Відчинити ↓</span>`;
     b.addEventListener("click",()=>toggle(n.id));
     document.getElementById(n.g).appendChild(b);
   });
@@ -389,34 +397,43 @@ function renderFilters(){
 }
 function renderSits(){
   const box=document.getElementById("sits"); box.innerHTML="";
+  let shown=0;
   SITS.forEach((s,i)=>{
     if(filter!=="Усі" && s.t!==filter) return;
-    const c=document.createElement("article"); c.className="sit";
-    c.innerHTML=`<p class="eyebrow">${s.t}</p><p class="q">${s.q}</p>
-      <div class="opts" role="group" aria-label="Варіанти: куди йти першим"></div>
-      <div class="res" aria-live="polite"></div>`;
+    shown++;
+    const c=document.createElement("article"); c.className="sit"; c.setAttribute("aria-labelledby","sq-"+i);
+    c.innerHTML=`<p class="eyebrow">${s.t}</p><h3 class="q" id="sq-${i}">${s.q}</h3>
+      <div class="opts" role="group" aria-label="Куди йти першим? Оберіть варіант"></div>
+      <div class="res"></div>`;
     const opts=c.querySelector(".opts");
     s.o.forEach((o,j)=>{
-      const b=document.createElement("button"); b.type="button"; b.className="opt"; b.textContent=o;
-      b.addEventListener("click",()=>reveal(c,s,j));
+      const b=document.createElement("button"); b.type="button"; b.className="opt";
+      b.innerHTML=`${o}<span class="sr mark-sr"></span>`;
+      b.addEventListener("click",()=>{ if(b.getAttribute("aria-disabled")!=="true") reveal(c,s,j,false,i); });
       opts.appendChild(b);
     });
-    if(s.done!==undefined) reveal(c,s,s.done,true);
+    if(s.done!==undefined) reveal(c,s,s.done,true,i);
     box.appendChild(c);
   });
+  document.getElementById("sitcount").textContent=`Показано ситуацій: ${shown}.`;
 }
-function reveal(card,s,j,silent){
+function reveal(card,s,j,silent,i){
   const btns=card.querySelectorAll(".opt");
-  btns.forEach((b,k)=>{b.disabled=true;if(k===s.a)b.classList.add("right");else if(k===j)b.classList.add("wrong");});
+  btns.forEach((b,k)=>{
+    b.setAttribute("aria-disabled","true");
+    const m=b.querySelector(".mark-sr");
+    if(k===s.a){b.classList.add("right");m.textContent=" (правильні двері)";}
+    else if(k===j){b.classList.add("wrong");m.textContent=" (ваш вибір)";}
+  });
   const ok=j===s.a;
   if(!silent && s.done===undefined){answered++; if(ok)correct++; s.done=j;}
   card.querySelector(".res").innerHTML=`<div class="answer">
-    <p class="verdict ${ok?"right":"wrong"}">${ok?"✓ Так, це перші двері.":"✗ Перші двері тут інші: "+s.o[s.a]+"."}</p>
+    <p class="verdict ${ok?"right":"wrong"}" tabindex="-1"><span aria-hidden="true">${ok?"✓ ":"✗ "}</span>${ok?"Так, це перші двері.":"Перші двері тут інші: "+s.o[s.a]+"."}</p>
     <p><b>Інструмент:</b> ${s.tool}</p>
     <p><b>Якщо не рушить:</b> ${s.next}</p></div>`;
+  if(!silent) card.querySelector(".verdict").focus();
   document.getElementById("score").textContent=answered?`Відповіли: ${answered} з ${SITS.length}, перші двері знайдено: ${correct}.`:"";
 }
-
 const STEPS = [
   {h:"Сформулюйте проблему одним реченням", p:"Що не так, де саме і кого це стосується. «Біля школи №3 на вулиці Шевченка немає пониженого бордюру, батьки з візочками і люди на кріслах колісних виходять на проїжджу частину.»", c:"Є адреса, фото, кого стосується"},
   {h:"Визначте, чиє це питання", p:"Громада, область чи держава? Більшість вулиць, шкіл, садків, ЦНАП і місцевого транспорту належить громаді. Якщо не впевнені, вважайте, що громаді: вас перенаправлять.", c:"Знаю рівень: громада, область чи держава"},
@@ -564,21 +581,22 @@ function renderTools(){
           <p class="fact"><b>Строк</b>${t.term}</p>
         </div>
         ${t.tip?`<p class="tip">${t.tip}</p>`:""}
-        ${t.tpl?`<div class="tpl"><div class="tpl-head"><p class="eyebrow">Шаблон</p>
+        ${t.tpl?`<div class="tpl"><div class="tpl-head"><p class="eyebrow" id="${tplId}-h">Шаблон: ${t.name}</p>
           <button type="button" class="copy" data-target="${tplId}">Скопіювати шаблон</button></div>
-          <pre id="${tplId}" tabindex="0" aria-label="Шаблон: ${t.name}">${t.tpl.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</pre></div>`:""}
+          <pre id="${tplId}" tabindex="0" aria-labelledby="${tplId}-h">${t.tpl.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</pre></div>`:""}
       </div>`;
     box.appendChild(d);
   });
   box.addEventListener("click",async e=>{
     const b=e.target.closest(".copy"); if(!b) return;
     const pre=document.getElementById(b.dataset.target);
-    try{await navigator.clipboard.writeText(pre.textContent);b.textContent="Скопійовано";}
-    catch(err){const r=document.createRange();r.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Виділено: натисніть Ctrl+C";}
+    try{await navigator.clipboard.writeText(pre.textContent);b.textContent="Скопійовано";announce("Шаблон скопійовано");}
+    catch(err){announce("Не вдалося скопіювати автоматично. Текст шаблону виділено, скопіюйте його вручну.");const r=document.createRange();r.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Виділено: натисніть Ctrl+C";}
     setTimeout(()=>b.textContent="Скопіювати шаблон",2200);
   });
 }
 
+function announce(t){const el=document.getElementById("status");el.textContent="";setTimeout(()=>el.textContent=t,50);}
 renderNodes(); renderFilters(); renderSits(); renderSteps(); renderTools();
 </script>
 
